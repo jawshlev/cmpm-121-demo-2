@@ -41,7 +41,7 @@ canvas.addEventListener("mousemove", (event) => {
     });
   }
 });
-canvas.addEventListener("mouseup", (event) => {
+canvas.addEventListener("mouseup", () => {
   cursor.active = false;
   const drawingEvent = new Event("drawing-changed");
   canvas.dispatchEvent(drawingEvent);
