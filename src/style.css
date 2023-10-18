@@ -78,4 +78,9 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+  canvas {
+    border: 2px solid black; /* Black border */
+    box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.5); /* Dropdown shadow */
+    border-radius: 8px;
+  }
 }
