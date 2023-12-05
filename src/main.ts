@@ -318,6 +318,36 @@ customStickerButton.addEventListener("click", () => {
     container.insertBefore(customSticker.button, customStickerButton);
   }
 });
+const exportButton = document.createElement("button");
+exportButton.innerHTML = "Export";
+container.append(exportButton);
+
+exportButton.addEventListener("click", () => {
+  // Create a new canvas for export
+  const exportCanvas = document.createElement("canvas");
+  exportCanvas.width = 1024;
+  exportCanvas.height = 1024;
+  const exportCtx = exportCanvas.getContext("2d")!;
+
+  // Scale the context to fit the larger canvas
+  exportCtx.scale(4, 4);
+
+  // Execute all items on the display list against the new canvas
+  drawingCommands.forEach((cmd) => {
+    if (cmd instanceof DrawingCommand) {
+      cmd.display(exportCtx);
+    } else if (cmd instanceof StickerTool) {
+      cmd.display(exportCtx);
+    }
+  });
+
+  // Trigger file download as PNG
+  const dataURL = exportCanvas.toDataURL("image/png");
+  const link = document.createElement("a");
+  link.href = dataURL;
+  link.download = "sticker_export.png";
+  link.click();
+});
 
 container.append(document.createElement("br"));
 
