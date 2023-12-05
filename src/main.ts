@@ -18,25 +18,43 @@ container.append(canvas);
 class DrawingTool {
   context: CanvasRenderingContext2D;
   lineWidth: number;
+  color: string;
 
   constructor(context: CanvasRenderingContext2D, lineWidth: number) {
     this.context = context;
-    this.context.strokeStyle = "black";
     this.lineWidth = lineWidth;
+    this.color = getRandomColor();
   }
+
+  updateColor() {
+    this.color = getRandomColor();
+    this.context.strokeStyle = this.color;
+  }
+}
+
+function getRandomColor(): string {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
 }
 
 class DrawingCommand {
   points: { x: number; y: number }[];
   thickness: number;
+  color: string;
 
-  constructor(x: number, y: number, thickness: number) {
+  constructor(x: number, y: number, thickness: number, color: string) {
     this.points = [{ x, y }];
     this.thickness = thickness;
+    this.color = color;
   }
 
   display(context: CanvasRenderingContext2D) {
     context.lineWidth = this.thickness;
+    context.strokeStyle = this.color;
     context.beginPath();
     const { x, y } = this.points[0];
     context.moveTo(x, y);
@@ -252,7 +270,8 @@ canvas.addEventListener("mousedown", (e) => {
     currentDrawingCommand = new DrawingCommand(
       e.offsetX,
       e.offsetY,
-      currentDrawingTool.lineWidth
+      currentDrawingTool.lineWidth,
+      currentDrawingTool.color
     );
     drawingCommands.push(currentDrawingCommand);
   }
@@ -282,6 +301,7 @@ container.append(thickButton);
 thickButton.addEventListener("click", () => {
   currentDrawingTool = thickDrawingTool;
   currentTool = null;
+  thickDrawingTool.updateColor();
   notify("tool-changed");
   thickButton?.classList.add("selectedTool");
   thinButton?.classList.remove("selectedTool");
@@ -294,6 +314,7 @@ container.append(thinButton);
 thinButton.addEventListener("click", () => {
   currentDrawingTool = thinDrawingTool;
   currentTool = null;
+  thinDrawingTool.updateColor();
   notify("tool-changed");
   thinButton?.classList.add("selectedTool");
   thickButton?.classList.remove("selectedTool");
