@@ -120,8 +120,8 @@ class StickerPreviewTool {
 }
 
 const start = 0;
-const thin = 4;
-const thick = 6;
+const thin = 2; // Adjusted thin line thickness
+const thick = 8; // Adjusted thick line thickness
 
 const ctx = canvas.getContext("2d")!;
 const thinDrawingTool = new DrawingTool(ctx, thin);
@@ -318,6 +318,7 @@ customStickerButton.addEventListener("click", () => {
     container.insertBefore(customSticker.button, customStickerButton);
   }
 });
+
 const exportButton = document.createElement("button");
 exportButton.innerHTML = "Export";
 container.append(exportButton);
