@@ -110,6 +110,7 @@ class StickerPreviewTool {
     const magnitude = 8;
     const xOffset = 6;
     const yOffset = 4;
+    context.font = `${magnitude}px monospace`;
     context.fillText(
       this.sticker,
       this.x - magnitude / xOffset,
@@ -134,17 +135,28 @@ const redoCommands: (DrawingCommand | StickerTool)[] = [];
 const stickerButtons: Sticker[] = [
   {
     name: "🫥",
-    button: document.createElement("button"),
+    button: createStickerButton("🫥"),
   },
   {
     name: "😾",
-    button: document.createElement("button"),
+    button: createStickerButton("😾"),
   },
   {
     name: "🍵",
-    button: document.createElement("button"),
+    button: createStickerButton("🍵"),
   },
 ];
+
+function createStickerButton(name: string): HTMLButtonElement {
+  const button = document.createElement("button");
+  button.innerHTML = name;
+  button.addEventListener("click", () => {
+    currentTool = { name, button };
+    currentDrawingTool = null;
+    notify("tool-changed");
+  });
+  return button;
+}
 
 interface Sticker {
   name: string;
@@ -288,14 +300,23 @@ thinButton.addEventListener("click", () => {
 });
 
 stickerButtons.forEach(function (tool) {
-  tool.button.innerHTML = tool.name;
   container.append(tool.button);
+});
 
-  tool.button.addEventListener("click", () => {
-    currentTool = tool;
-    currentDrawingTool = null;
-    notify("tool-changed");
-  });
+const customStickerButton = document.createElement("button");
+customStickerButton.innerHTML = "Create Custom Sticker";
+container.append(customStickerButton);
+
+customStickerButton.addEventListener("click", () => {
+  const stickerName = prompt("Enter the custom sticker:");
+  if (stickerName) {
+    const customSticker: Sticker = {
+      name: stickerName,
+      button: createStickerButton(stickerName),
+    };
+    stickerButtons.push(customSticker);
+    container.insertBefore(customSticker.button, customStickerButton);
+  }
 });
 
 container.append(document.createElement("br"));
